@@ -1,0 +1,15 @@
+{
+  "name": "creator-publish-kit",
+  "version": "1.0.0",
+  "private": false,
+  "description": "A local-first YouTube publishing workspace for metadata, chapters, thumbnail preflight and launch checklists.",
+  "type": "module",
+  "scripts": {
+    "dev": "node server.mjs",
+    "test": "node --test",
+    "check": "node --check src/app.js && node --check src/core.js && node --check server.mjs",
+    "validate": "npm run check && npm test"
+  },
+  "engines": { "node": ">=18" },
+  "license": "MIT"
+}
