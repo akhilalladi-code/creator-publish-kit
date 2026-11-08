@@ -1,0 +1,13 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {createInitialProject,parseChapters,validateChapters,validateMetadata,validateThumbnail,checklistProgress,buildMarkdown,CHECKLIST} from "../src/core.js";
+test("initial project has eight unchecked launch tasks",()=>{const p=createInitialProject();assert.equal(CHECKLIST.length,8);assert.equal(checklistProgress(p.checklist).percent,0);});
+test("parses MM:SS and HH:MM:SS chapter timestamps",()=>{const c=parseChapters("00:00 Intro\n01:20 Context\n01:02:03 Wrap");assert.deepEqual(c.map(x=>x.time),[0,80,3723]);});
+test("rejects malformed and out-of-range timestamps",()=>{assert.equal(parseChapters("0:99 Invalid")[0].valid,false);assert.equal(parseChapters("hello")[0].valid,false);});
+test("chapter validator accepts ordered, spaced chapters",()=>{assert.equal(validateChapters("00:00 Intro\n00:30 Context\n01:10 Wrap").valid,true);});
+test("chapter validator catches missing zero start, too few and close chapters",()=>{const r=validateChapters("00:05 Start\n00:10 Next");assert.equal(r.valid,false);assert.ok(r.errors.some(x=>x.includes("00:00")));assert.ok(r.errors.some(x=>x.includes("three")));assert.ok(r.errors.some(x=>x.includes("10 seconds")));});
+test("metadata validation requires title and description",()=>{assert.equal(validateMetadata(createInitialProject()).errors.length,2);});
+test("metadata validation counts tags and enforces length limits",()=>{const good=validateMetadata({title:"A useful video",description:"Clear context",tags:"design, workflow",keyword:"design"});assert.equal(good.valid,true);assert.equal(good.tagCount,2);const bad=validateMetadata({title:"x".repeat(101),description:"y".repeat(5001)});assert.equal(bad.valid,false);});
+test("thumbnail preflight checks 16:9 and resolution",()=>{assert.equal(validateThumbnail({width:1280,height:720}).valid,true);assert.equal(validateThumbnail({width:600,height:600}).valid,false);});
+test("checklist progress is rounded and accurate",()=>{const c=Object.fromEntries(CHECKLIST.map(([id],i)=>[id,i<3]));assert.deepEqual(checklistProgress(c),{complete:3,total:8,percent:38});});
+test("Markdown export contains chapters and checklist",()=>{const p={...createInitialProject(),title:"Launch",description:"Details",chapters:"00:00 Intro\n00:30 Context\n01:00 Wrap",checklist:{metadata:true}};const md=buildMarkdown(p);assert.match(md,/# Launch/);assert.match(md,/## Chapters/);assert.match(md,/- \[x\] Title and description reviewed/);});
