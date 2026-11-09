@@ -1,3 +1,7 @@
+![CREATOR PUBLISH KIT — Diwali 2026](./assets/diwali-banner.svg)
+
+<p align="center"><a href="https://akhilalladi-code.github.io/diwali-universe/"><strong>🪔 Explore Diwali Universe 2026 · Interactive celebration ↗</strong></a></p>
+
 # Creator Publish Kit
 
 A local-first YouTube publishing workspace for the final mile before upload. Prepare metadata, validate chapters, inspect thumbnail dimensions, complete a launch checklist and export a portable publishing pack.
