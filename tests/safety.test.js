@@ -1,14 +1,14 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import path from "node:path";
-import { isPathInsideRoot, validateImportedProject, validateThumbnailFile, MAX_THUMBNAIL_BYTES } from "../src/safety.js";
+import { validateImportedProject, validateThumbnailFile, MAX_THUMBNAIL_BYTES } from "../src/safety.js";
+import { isPathInsideRoot } from "../server-utils.mjs";
 import { createInitialProject } from "../src/core.js";
 
 test("path boundary accepts files inside root and rejects sibling-prefix paths", () => {
-  const root = path.resolve("/tmp/creator");
-  assert.equal(isPathInsideRoot(root, path.join(root, "index.html")), true);
-  assert.equal(isPathInsideRoot(root, path.resolve("/tmp/creator-secret/private.txt")), false);
-  assert.equal(isPathInsideRoot(root, path.resolve(root, "../outside.txt")), false);
+  const root = "/tmp/creator";
+  assert.equal(isPathInsideRoot(root, root + "/index.html"), true);
+  assert.equal(isPathInsideRoot(root, "/tmp/creator-secret/private.txt"), false);
+  assert.equal(isPathInsideRoot(root, "/tmp/outside.txt"), false);
 });
 test("import validation merges only known project fields and checklist keys", () => {
   const imported = validateImportedProject({ title: "Imported", checklist: { metadata: true, injected: true }, ignored: "value" }, createInitialProject());

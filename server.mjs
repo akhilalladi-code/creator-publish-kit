@@ -2,7 +2,7 @@ import http from "node:http";
 import { readFile, stat } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { isPathInsideRoot } from "./src/safety.js";
+import { isPathInsideRoot } from "./server-utils.mjs";
 
 const root = path.resolve(process.cwd());
 const port = Number(process.env.PORT || 4179);
@@ -30,6 +30,5 @@ export function createAppServer(baseDirectory = root) {
     }
   });
 }
-
 const invokedDirectly = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 if (invokedDirectly) createAppServer().listen(port, host, () => console.log(`Creator Publish Kit running at http://${host}:${port}`));
