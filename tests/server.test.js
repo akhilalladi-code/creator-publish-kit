@@ -18,7 +18,7 @@ test("static server serves app files and blocks traversal", async t => {
   const ok = await fetch(base + "/index.html");
   assert.equal(ok.status, 200);
   assert.equal(await ok.text(), "safe app");
-  const traversal = await fetch(base + "/%2e%2e/" + path.basename(sibling) + "/private.txt");
+  const traversal = await fetch(base + "/%2e%2e%2f" + path.basename(sibling) + "/private.txt");
   assert.equal(traversal.status, 404);
   assert.equal(ok.headers.get("x-content-type-options"), "nosniff");
 });
